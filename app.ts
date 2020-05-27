@@ -8,6 +8,7 @@ import { Context } from "https://deno.land/x/oak/mod.ts";
 import { validateJwt } from "https://deno.land/x/djwt/validate.ts"
 import { makeJwt, setExpiration, Jose, Payload } from "https://deno.land/x/djwt/create.ts"
 
+
 let jwt;
 const key = "secret-key";
 
@@ -100,7 +101,7 @@ export const getDinos = async ({ response }: { response: any }) => {
 
 
 
- 
+
 
 const templateInd = `
 </style>
@@ -191,7 +192,7 @@ export const getDino = async ({
 const templateAdd = navBar + `
 <div class="flex flex-col items-center m-8" >
     <form action = "/new" method='POST' style="width:50%;">
-    
+
     <div class="mb-4">
     <label class="block text-gray-700 mb-2" for="name">
       Name <span class="text-red-500 italic">( * required )</span>
@@ -300,24 +301,25 @@ var templateSearch = `
 <div class="w-full max-w-sm m-4 text-lg">
 <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"">
   <div class="mb-4">
-    <label class="block text-gray-700 mb-2" for="search">
+    <label class="block text-gray-700 mb-2" for="searchDate">
       Query
     </label>
     <input class=" query shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="key" type="text" placeholder="Search">
   </div>
-  <div class="flex items-center justify-between search">
-    <input class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit" value="Search">
+  <div class="flex items-center justify-between">
+    <input class="searchDate bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit" value="Search">
   </div>
+
 </div>
 <script>
-document.querySelector(".search").addEventListener('click', ()=>{
+document.querySelector(".searchDate").addEventListener('click', ()=>{
   var current = window.location.href ;
   var key = document.querySelector(".query").value
   if (current[current.length-1]=="/"){
-    window.location.href = current + key;
+    window.location.href = current + "date/" + key;
   }
   else{
-    window.location.href = current + "/" + key;
+    window.location.href = current + "/date/" + key;
   }
 })
 </script>
@@ -372,7 +374,7 @@ const noAuthMiddleware = async (ctx: Context, next: any) => {
     ctx.response.status = 401;
     ctx.response.redirect('/auth');
     }
-    
+
 }
 
 const templateLogin = `<div class="w-full max-w-sm m-4 text-lg">
@@ -421,7 +423,7 @@ const templateClaim = navBar + `
 
     <div class="mb-4" >
     <label class="block text-gray-700 mb-2" for="name">
-      Name
+      Dinosaur Name
     </label>
     <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="name" type="text" value="{{data.name}}" placeholder="name" readonly>
   </div>
@@ -440,7 +442,7 @@ const templateClaim = navBar + `
 const templateClaimEdit = navBar + `
 <div class="flex flex-col items-center m-8" >
     <form action = "/editClaim" method='POST' style="width:50%;">
-    
+
     <div class="mb-4" >
     <label class="block text-gray-700 mb-2" for="username">
       Dinosaur ID
@@ -475,63 +477,63 @@ const templateClaimEdit = navBar + `
 
   </form>
   </div>
-  
+
   `
 
 const templateEdit = navBar + `
 <div class="flex flex-col items-center m-8" >
     <form action = "/change" method='POST' style="width:50%;">
-    
+
     <div class="mb-4" >
-    <label class="block text-gray-700 mb-2" for="username">
-      Username
+    <label class="block text-gray-700 mb-2" for="name">
+      Name
     </label>
-    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="username" type="text" value="{{data.name}}" placeholder="Username" readonly>
+    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="name" type="text" value="{{data.name}}" placeholder="Username" readonly>
   </div>
   <div class="mb-4">
-    <label class="block text-gray-700 mb-2" for="username">
+    <label class="block text-gray-700 mb-2" for="image">
     Image URL
     </label>
     <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="image" type="text" value="{{data.image}}" placeholder="Image URL">
   </div>
   <div class="mb-4">
-    <label class="block text-gray-700 mb-2" for="username">
-      Scientific Name
+    <label class="block text-gray-700 mb-2" for="sciName">
+      Scientific Name <span class="text-red-500 italic">( * required )</span>
     </label>
     <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="scientificName" type="text" placeholder="Scientific Name" value="{{data.scientificName}}" >
   </div>
   <div class="mb-4">
-    <label class="block text-gray-700 mb-2" for="username">
+    <label class="block text-gray-700 mb-2" for="height">
       Height
     </label>
     <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="height" type="text" value="{{data.height}}" placeholder="Height">
   </div>
   <div class="mb-4">
-    <label class="block text-gray-700 mb-2" for="username">
+    <label class="block text-gray-700 mb-2" for="weight">
       Weight
     </label>
     <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="weight" type="text" placeholder="Weight" value="{{data.weight}}" >
   </div>
   <div class="mb-4">
-    <label class="block text-gray-700 mb-2" for="username">
+    <label class="block text-gray-700 mb-2" for="time">
       Time
     </label>
     <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="time" type="text" value="{{data.time}}" placeholder="Time">
   </div>
   <div class="mb-4">
-    <label class="block text-gray-700 mb-2" for="username">
+    <label class="block text-gray-700 mb-2" for="areas">
       Areas
     </label>
     <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="areas" type="text" value="{{data.areas}}" placeholder="Areas">
   </div>
   <div class="mb-4">
-    <label class="block text-gray-700 mb-2" for="username">
-      Summary
+    <label class="block text-gray-700 mb-2" for="summary">
+      Summary <span class="text-red-500 italic">( * required )</span>
     </label>
     <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="summary" type="text" value="{{data.summary}}" placeholder="Summary">
   </div>
   <div class="mb-4">
-    <label class="block text-gray-700 mb-2" for="username">
+    <label class="block text-gray-700 mb-2" for="references">
       References
     </label>
     <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="references" type="text" value="{{data.references}}" placeholder="References">
@@ -563,8 +565,10 @@ router
         context.response.redirect(`/addDino`)
         return
       }
-      var key = features[7].split(" ")
-      key.push(features[0],features[2])
+      var key1 = features[7].split(" ")
+      var key2 = features[0].split(" ")
+      var key3 = features[2].split(" ")
+      var key = key1.concat(key2,key3)
       var insert = await dinosDB.insertOne({
         name: features[0],
         image: features[1],
@@ -586,7 +590,7 @@ router
   })
 
 
- 
+
 
     .get('/edit/:name', authMiddleware, async  ({
       params,response,
@@ -605,7 +609,7 @@ router
               return
           }
           response.status = 400
-          response.body =  navBar + cont +  `Cannot find dino ${params.name}` 
+          response.body =  navBar + cont +  `Cannot find dino ${params.name}`
     })
 
 
@@ -626,11 +630,11 @@ router
               return
           }
           response.status = 400
-          response.body =  navBar + cont +  `Cannot find dino ${params.name}` 
+          response.body =  navBar + cont +  `Cannot find dino ${params.name}`
     })
 
 
-    
+
     .post('/claim', authMiddleware, async context => {
       const body = await context.request.body({
         contentTypes: {
@@ -643,13 +647,19 @@ router
         const info = Array.from(body.value.values())
         console.log(info)
         let user = context.cookies.get("user")
-        const hash = await bcrypt.hash(info[0]+info[2]+user)
+        console.log(user)
+        const find = await claimsDB.findOne({user:user, dinoID:info[0]})
+        if (find){
+          context.response.body =navBar + `<div class=" text-2xl m-8">You already have one claim
+          <br> Edit it <a href = "/editClaim/${find.id}"> here </a></div>`
+          return
+        }
         const insert = await claimsDB.insertOne({dinoID:info[0], claim:info[2], user:user})
         const up = await claimsDB.updateOne({_id:insert},{$set : {id:insert.$oid}})
         console.log(insert)
           if (!insert){
             context.response.status = 400
-            context.response.body = navBar + cont +  `Cannot find dino ${info[0]}` 
+            context.response.body = navBar + cont +  `Cannot find dino ${info[0]}`
           } else{
             context.response.redirect(`/getDino/${info[0]}`)
           }
@@ -663,11 +673,21 @@ router
           form : ['multipart', 'urlencoded']
         }
       });
+      console.log(context.request.url)
       if (body.type === 'form'){
         console.log(Array.from(body.value.keys()));
         console.log(Array.from(body.value.values()));
         const info = Array.from(body.value.values())
         console.log(info)
+        const dino = await dinosDB.findOne({name:info[0]})
+        if (info[0]=="" || info[2]=="" || info[7]==""){
+          context.response.redirect("/edit/" + dino.id)
+          return
+        }
+        var key1 = info[7].split(" ")
+        var key2 = info[0].split(" ")
+        var key3 = info[2].split(" ")
+        var key = key1.concat(key2,key3)
         const { matchedCount, modifiedCount, upsertedId } = await dinosDB.updateOne(
           {name: info[0] },
           { $set: { name: info[0],
@@ -679,12 +699,13 @@ router
                     areas: info[6],
                     summary: info[7],
                     references: info[8],
+                    key: key
                      } }
         );
 
           if (matchedCount==0){
             context.response.status = 400
-            context.response.body = navBar + cont +  `Cannot find dino ${info[0]}` 
+            context.response.body = navBar + cont +  `Cannot find dino ${info[0]}`
           } else{
             let main = await dinosDB.findOne({name:info[0]})
             console.log(main)
@@ -717,7 +738,7 @@ router
 
           if (matchedCount==0){
             context.response.status = 400
-            context.response.body = navBar + cont +  `Cannot find claim ${info[3]}` 
+            context.response.body = navBar + cont +  `Cannot find claim ${info[3]}`
           } else{
             context.response.redirect(`/getDino/${info[0]}`)
           }
@@ -739,7 +760,7 @@ router
         const find = await users.findOne({user:info[0]})
         if (find || info[0]=="" || info[1]==""){
           context.response.redirect('/signup')
-          return; 
+          return;
         }
         else{
           const hash = await bcrypt.hash(info[1])
@@ -747,7 +768,7 @@ router
           user : info[0],
           password : hash,
           })
-          context.response.redirect('/login') 
+          context.response.redirect('/login')
         }
       }
     })
@@ -779,17 +800,17 @@ router
             context.cookies.set("token", jwt)
             context.cookies.set("user", info[0])
             console.log(jwt)
-            context.response.redirect('/') 
+            context.response.redirect('/')
             return
           }
-          context.response.redirect('/login') 
+          context.response.redirect('/login')
           return
         }
-        context.response.redirect('/login') 
-        
+        context.response.redirect('/login')
+
     }})
 
-    .get('/search/:name', async  ({
+    .get('/search/date/:name', async  ({
       params,response,
         }: {
         params: {
@@ -798,8 +819,38 @@ router
         response: any
         }) => {
           const dinos = await dinosDB.find({ key: params.name })
-        
-            console.log(dinos)
+            console.log("dinos",dinos)
+            response.status = 200
+            var rendered = navBar+`<div class="flex m-8 items-center justify-center searchName">
+            <input class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit" value="Sort by name">
+          </div>`+cont;
+            for (var i=dinos.length-1; i>=0; i--){
+              rendered += handlebarsEngine(template, {data: dinos[i]})
+            }
+            rendered+=`<script>
+            document.querySelector(".searchName").addEventListener('click', ()=>{
+              var current = window.location.href ;
+              var splitted = current.split("/")
+              console.log(splitted)
+              window.location.href =  "http://" + splitted[2] + "/" + splitted[3] +"/name/" + splitted[5]
+            })
+            </script>`
+            response.body = rendered
+              return
+    })
+
+    .get('/search/name/:name', async  ({
+      params,response,
+        }: {
+        params: {
+            name: string
+        }
+        response: any
+        }) => {
+          const temp = dinosDB
+          const dinos = await temp.aggregate([{$match:{key:params.name}},{$sort:{name:1}}])
+          // console.log("ADD\n",add,"ADD\n")
+            console.log("dinos",dinos)
             response.status = 200
             var rendered = navBar+cont;
             for (var i=0; i<dinos.length; i++){
@@ -841,7 +892,7 @@ router
 
   .get('/auth', async (ctx: Context, next: any) => {
     jwt = ctx.cookies.get("token")
-    console.log(jwt) 
+    console.log(jwt)
     let loggedIn = false
     if (!jwt) {
     }
