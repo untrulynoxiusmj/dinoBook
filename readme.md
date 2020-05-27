@@ -1,3 +1,1 @@
-# NOT COMPLETE YET
-
-## WORK PENDING
+# DinoBook
