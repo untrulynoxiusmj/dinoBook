@@ -101,7 +101,7 @@ export const getDinos = async ({ response }: { response: any }) => {
 
 
 
-
+ 
 
 const templateInd = `
 </style>
@@ -127,6 +127,11 @@ const templateInd = `
 <div class="flex items-center justify-between">
 <a href='/edit/{{data.id}}' class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Edit</a>
 </div>
+
+<div class="flex items-center justify-between my-8">
+<a href='/delete/{{data.id}}' class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Delete</a>
+</div>
+
 </div>
 
 </div>
@@ -159,7 +164,9 @@ const down = `
 const templateOneClaim = `
 <div class=" text-xl mb-2 pd-8 my-8">{{data.user}} : {{data.claim}}
     <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" href="/editClaim/{{data.id}}">
-    Edit </a></div>
+    Edit </a><a class=" mx-8 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" href="/deleteClaim/{{data.id}}">
+    Delete </a></div>
+    
 `
 
 export const getDino = async ({
@@ -192,7 +199,7 @@ export const getDino = async ({
 const templateAdd = navBar + `
 <div class="flex flex-col items-center m-8" >
     <form action = "/new" method='POST' style="width:50%;">
-
+    <h1 class="text-2xl font-bold my-8">Add a dinosaur</h1>
     <div class="mb-4">
     <label class="block text-gray-700 mb-2" for="name">
       Name <span class="text-red-500 italic">( * required )</span>
@@ -267,6 +274,7 @@ export const addDino =  ({
 
 const templateSignup = `<div class="w-full max-w-sm m-4 text-lg">
 <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" action="signup" method="POST">
+<h1 class="text-2xl font-bold my-8">Sign Up</h1>
   <div class="mb-4">
     <label class="block text-gray-700 mb-2" for="username">
       Username
@@ -300,6 +308,7 @@ export const signup =  ({
 var templateSearch = `
 <div class="w-full max-w-sm m-4 text-lg">
 <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"">
+<h1 class="text-2xl font-bold my-8">Search a keyword</h1>
   <div class="mb-4">
     <label class="block text-gray-700 mb-2" for="searchDate">
       Query
@@ -309,7 +318,7 @@ var templateSearch = `
   <div class="flex items-center justify-between">
     <input class="searchDate bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit" value="Search">
   </div>
-
+  
 </div>
 <script>
 document.querySelector(".searchDate").addEventListener('click', ()=>{
@@ -374,11 +383,12 @@ const noAuthMiddleware = async (ctx: Context, next: any) => {
     ctx.response.status = 401;
     ctx.response.redirect('/auth');
     }
-
+    
 }
 
 const templateLogin = `<div class="w-full max-w-sm m-4 text-lg">
 <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" action="login" method="POST">
+<h1 class="text-2xl font-bold my-8">Login</h1>
   <div class="mb-4">
     <label class="block text-gray-700 mb-2" for="username">
       Username
@@ -392,7 +402,7 @@ const templateLogin = `<div class="w-full max-w-sm m-4 text-lg">
     <input class="shadow appearance-none  rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" name="password" type="password" placeholder="Password">
   </div>
   <div class="flex items-center justify-between">
-    <input class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit" value="Sign In">
+    <input class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit" value="Login">
   </div>
 </form>
 </div>`
@@ -413,7 +423,7 @@ const templateClaim = navBar + `
 <div class="flex flex-col items-center m-8" >
 
     <form action = "/claim" method='POST' style="width:50%;">
-
+    <h1 class="text-2xl font-bold my-8">Add Claim</h1>
     <div class="mb-4" >
     <label class="block text-gray-700 mb-2" for="name">
       Dinosaur ID
@@ -442,7 +452,7 @@ const templateClaim = navBar + `
 const templateClaimEdit = navBar + `
 <div class="flex flex-col items-center m-8" >
     <form action = "/editClaim" method='POST' style="width:50%;">
-
+    <h1 class="text-2xl font-bold my-8">Edit Claim</h1>
     <div class="mb-4" >
     <label class="block text-gray-700 mb-2" for="username">
       Dinosaur ID
@@ -477,13 +487,13 @@ const templateClaimEdit = navBar + `
 
   </form>
   </div>
-
+  
   `
 
 const templateEdit = navBar + `
 <div class="flex flex-col items-center m-8" >
     <form action = "/change" method='POST' style="width:50%;">
-
+    <h1 class="text-2xl font-bold my-8">Edit Dinosaur</h1>
     <div class="mb-4" >
     <label class="block text-gray-700 mb-2" for="name">
       Name
@@ -590,7 +600,7 @@ router
   })
 
 
-
+ 
 
     .get('/edit/:name', authMiddleware, async  ({
       params,response,
@@ -609,9 +619,51 @@ router
               return
           }
           response.status = 400
-          response.body =  navBar + cont +  `Cannot find dino ${params.name}`
+          response.body =  navBar + cont +  `Cannot find dino ${params.name}` 
     })
 
+    .get('/delete/:name', authMiddleware, async  ({
+      params,response,
+        }: {
+        params: {
+            name: string
+        }
+        response: any
+        }) => {
+          const dino = await dinosDB.findOne({ id : params.name})
+          if (dino) {
+            let deleteDino = await dinosDB.deleteOne({id:params.name})
+            let deleteClaim = await claimsDB.deleteMany({dinosID:params.name})
+            response.redirect("/")
+            return
+          }
+          response.status = 400
+          response.body =  navBar + cont +  `Cannot find dino ${params.name}` 
+    })
+
+
+    .get('/deleteClaim/:name', authMiddleware,async context => {    
+    // .get('/deleteClaim/:name', authMiddleware, async  ({
+      // params,response,
+      //   }: {
+      //   params: {
+      //       name: string
+      //   }
+      //   response: any
+      //   }) => {
+          const claim = await claimsDB.findOne({ id : context.params.name})
+          if (context.cookies.get("user")!=claim.user){
+            context.response.body = navBar + `<div class=" text-2xl m-8">This claim was not added by you</div>`
+            return
+          }
+          if (claim) {
+            let deleteClaim = await claimsDB.deleteOne({id:context.params.name})
+            context.response.redirect("/getDino/" + claim.dinoID)
+            return
+          }
+          context.response.status = 400
+          context.response.body =  navBar + cont +  `Cannot find claim ${context.params.name}` 
+    })
 
     .get('/claim/:name', authMiddleware, async  ({
       params,response,
@@ -630,11 +682,11 @@ router
               return
           }
           response.status = 400
-          response.body =  navBar + cont +  `Cannot find dino ${params.name}`
+          response.body =  navBar + cont +  `Cannot find dino ${params.name}` 
     })
 
 
-
+    
     .post('/claim', authMiddleware, async context => {
       const body = await context.request.body({
         contentTypes: {
@@ -659,7 +711,7 @@ router
         console.log(insert)
           if (!insert){
             context.response.status = 400
-            context.response.body = navBar + cont +  `Cannot find dino ${info[0]}`
+            context.response.body = navBar + cont +  `Cannot find dino ${info[0]}` 
           } else{
             context.response.redirect(`/getDino/${info[0]}`)
           }
@@ -705,7 +757,7 @@ router
 
           if (matchedCount==0){
             context.response.status = 400
-            context.response.body = navBar + cont +  `Cannot find dino ${info[0]}`
+            context.response.body = navBar + cont +  `Cannot find dino ${info[0]}` 
           } else{
             let main = await dinosDB.findOne({name:info[0]})
             console.log(main)
@@ -738,7 +790,7 @@ router
 
           if (matchedCount==0){
             context.response.status = 400
-            context.response.body = navBar + cont +  `Cannot find claim ${info[3]}`
+            context.response.body = navBar + cont +  `Cannot find claim ${info[3]}` 
           } else{
             context.response.redirect(`/getDino/${info[0]}`)
           }
@@ -760,7 +812,7 @@ router
         const find = await users.findOne({user:info[0]})
         if (find || info[0]=="" || info[1]==""){
           context.response.redirect('/signup')
-          return;
+          return; 
         }
         else{
           const hash = await bcrypt.hash(info[1])
@@ -768,7 +820,7 @@ router
           user : info[0],
           password : hash,
           })
-          context.response.redirect('/login')
+          context.response.redirect('/login') 
         }
       }
     })
@@ -800,14 +852,14 @@ router
             context.cookies.set("token", jwt)
             context.cookies.set("user", info[0])
             console.log(jwt)
-            context.response.redirect('/')
+            context.response.redirect('/') 
             return
           }
-          context.response.redirect('/login')
+          context.response.redirect('/login') 
           return
         }
-        context.response.redirect('/login')
-
+        context.response.redirect('/login') 
+        
     }})
 
     .get('/search/date/:name', async  ({
@@ -892,7 +944,7 @@ router
 
   .get('/auth', async (ctx: Context, next: any) => {
     jwt = ctx.cookies.get("token")
-    console.log(jwt)
+    console.log(jwt) 
     let loggedIn = false
     if (!jwt) {
     }
