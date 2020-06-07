@@ -1,6 +1,10 @@
 # DinoBook
 
-Dinosour's network
+
+
+##### live link :
+
+[dinobook.herokuapp.com](dinobook.herokuapp.com)
 
 
 
@@ -70,6 +74,8 @@ cargo install deno
 ###### Make path /data/db in root directory
 
 In windows :
+
+
 
 Navigate to root directory ( C : in windows )
 Make folder data
