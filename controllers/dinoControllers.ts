@@ -1,7 +1,7 @@
 import { Context } from "https://deno.land/x/oak/mod.ts";
 import { handlebarsEngine } from "../utilities/handlebars.ts"
-import { dinosDB, claimsDB } from "../db.ts"
-import {navBar,cont,templateAdd,templateEdit} from "../templates.ts"
+import * as dbTs from "../db.ts"
+import * as templatesTs from "../templates.ts"
 
 
 export const addDino =  ({
@@ -11,7 +11,7 @@ export const addDino =  ({
     request: any
     response: any
   }) => {
-    response.body = templateAdd
+    response.body = templatesTs.templateAdd
 }
 
 export const newDino = async (context : Context, next: any)  => {
@@ -27,7 +27,7 @@ export const newDino = async (context : Context, next: any)  => {
       let features = new Array
       features = Array.from(body.value.values());
     
-      const find = await dinosDB.findOne({name:features[0]})
+      const find = await dbTs.dinosDB.findOne({name:features[0]})
       if (features[0]=="" || features[2]=="" || features[7]=="" || find){
         context.response.redirect(`/addDino`)
         return
@@ -36,7 +36,7 @@ export const newDino = async (context : Context, next: any)  => {
       var key2 = features[0].split(" ")
       var key3 = features[2].split(" ")
       var key = key1.concat(key2,key3)
-      var insert = await dinosDB.insertOne({
+      var insert = await dbTs.dinosDB.insertOne({
         name: features[0],
         image: features[1],
         scientificName: features[2],
@@ -51,7 +51,7 @@ export const newDino = async (context : Context, next: any)  => {
       console.log(insert.$oid)
       let id = insert.$oid
       console.log(id)
-      const {matchedCount, modifiedCount, upsertedId} = await dinosDB.updateOne({name:features[0]}, { $set : {id:id}})
+      const {matchedCount, modifiedCount, upsertedId} = await dbTs.dinosDB.updateOne({name:features[0]}, { $set : {id:id}})
       context.response.redirect(`/getDino/${id}`)
     }
   }
@@ -64,16 +64,16 @@ export const edit =  async  ({
       }
       response: any
       }) => {
-        const dino = await dinosDB.findOne({ id : params.name})
+        const dino = await dbTs.dinosDB.findOne({ id : params.name})
         if (dino) {
           console.log(dino)
             response.status = 200
-            var rendered = handlebarsEngine(templateEdit, {data:dino})
+            var rendered = handlebarsEngine(templatesTs.templateEdit, {data:dino})
             response.body = rendered
             return
         }
         response.status = 400
-        response.body =  navBar + cont +  `Cannot find dino ${params.name}` 
+        response.body =  templatesTs.navBar + templatesTs.cont +  `Cannot find dino ${params.name}` 
   }
 
 export const deleteDino = async  ({
@@ -84,15 +84,15 @@ export const deleteDino = async  ({
       }
       response: any
       }) => {
-        const dino = await dinosDB.findOne({ id : params.name})
+        const dino = await dbTs.dinosDB.findOne({ id : params.name})
         if (dino) {
-          let deleteDino = await dinosDB.deleteOne({id:params.name})
-          let deleteClaim = await claimsDB.deleteMany({dinosID:params.name})
+          let deleteDino = await dbTs.dinosDB.deleteOne({id:params.name})
+          let deleteClaim = await dbTs.claimsDB.deleteMany({dinosID:params.name})
           response.redirect("/")
           return
         }
         response.status = 400
-        response.body =  navBar + cont +  `Cannot find dino ${params.name}` 
+        response.body =  templatesTs.navBar + templatesTs.cont +  `Cannot find dino ${params.name}` 
   }
 
 
@@ -111,7 +111,7 @@ export const change = async (context : Context, next: any)  => {
       let info = new Array
       info = Array.from(body.value.values())
       console.log(info)
-      const dino = await dinosDB.findOne({name:info[0]})
+      const dino = await dbTs.dinosDB.findOne({name:info[0]})
       if (info[0]=="" || info[2]=="" || info[7]==""){
         context.response.redirect("/edit/" + dino.id)
         return
@@ -120,7 +120,7 @@ export const change = async (context : Context, next: any)  => {
       var key2 = info[0].split(" ")
       var key3 = info[2].split(" ")
       var key = key1.concat(key2,key3)
-      const { matchedCount, modifiedCount, upsertedId } = await dinosDB.updateOne(
+      const { matchedCount, modifiedCount, upsertedId } = await dbTs.dinosDB.updateOne(
         {name: info[0] },
         { $set: { name: info[0],
                   image: info[1],
@@ -137,9 +137,9 @@ export const change = async (context : Context, next: any)  => {
 
         if (matchedCount==0){
           context.response.status = 400
-          context.response.body = navBar + cont +  `Cannot find dino ${info[0]}` 
+          context.response.body = templatesTs.navBar + templatesTs.cont +  `Cannot find dino ${info[0]}` 
         } else{
-          let main = await dinosDB.findOne({name:info[0]})
+          let main = await dbTs.dinosDB.findOne({name:info[0]})
           console.log(main)
           context.response.redirect(`/getDino/${main.id}`)
         }

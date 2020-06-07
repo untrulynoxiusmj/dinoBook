@@ -1,11 +1,11 @@
 import { Context } from "https://deno.land/x/oak/mod.ts";
 import { handlebarsEngine } from "../utilities/handlebars.ts"
-import {notLogged,logged, navBar, cont, templateSignup, templateLogin} from "../templates.ts"
+import * as templatesTs from "../templates.ts"
 import { users } from "../db.ts"
 import * as bcrypt from "https://deno.land/x/bcrypt/mod.ts"
-import { makeJwt, setExpiration, Payload } from "https://deno.land/x/djwt/create.ts"
+import * as createTs from "https://deno.land/x/djwt/create.ts"
 import { validateJwt } from "https://deno.land/x/djwt/validate.ts"
-import {key,header} from "../utilities/validate.ts"
+import * as validateTs from "../utilities/validate.ts"
 
 export const signup =  ({
     request,
@@ -14,8 +14,8 @@ export const signup =  ({
     request: any
     response: any
   }) => {
-    var rendered = navBar+cont
-    rendered+= templateSignup
+    var rendered = templatesTs.navBar+templatesTs.cont
+    rendered+= templatesTs.templateSignup
     response.body = handlebarsEngine(rendered, {data: {} })
   }
 
@@ -68,11 +68,11 @@ export const loginLogic = async (context : Context, next: any)  => {
         console.log(result)
         if (result){
           console.log("exist in db")
-          const payload: Payload = {
+          const payload: createTs.Payload = {
             iss: user.user,
-            exp: setExpiration(new Date().getTime() + 300000),
+            exp: createTs.setExpiration(new Date().getTime() + 300000),
           }
-          let jwt = makeJwt({key, header, payload});
+          let jwt = createTs.makeJwt({key: validateTs.key, header: validateTs.header, payload});
           context.cookies.set("token", jwt)
           context.cookies.set("user", info[0])
           console.log(jwt)
@@ -94,16 +94,16 @@ export const loginLogic = async (context : Context, next: any)  => {
     let loggedIn = false
     if (!jwt) {
     }
-    else if (await validateJwt(jwt, key, {isThrowing: false})){
+    else if (await validateJwt(jwt, validateTs.key, {isThrowing: false})){
       loggedIn = true
     }
-    var rendered = navBar+cont
+    var rendered = templatesTs.navBar+templatesTs.cont
     if (loggedIn){
-      rendered+=logged
+      rendered+=templatesTs.logged
       ctx.response.body = handlebarsEngine(rendered, {data: {} })
     }
     else{
-      rendered+=notLogged
+      rendered+=templatesTs.notLogged
     ctx.response.body = handlebarsEngine(rendered, {data: {} })
     }
   }
@@ -120,8 +120,8 @@ export const logout = (context: Context, next: any) => {
     request: any
     response: any
   }) => {
-    var rendered = navBar+cont
-    rendered+=templateLogin
+    var rendered = templatesTs.navBar+templatesTs.cont
+    rendered+=templatesTs.templateLogin
     response.body = handlebarsEngine(rendered, {data: {} })
   }
   

@@ -1,13 +1,13 @@
 import { handlebarsEngine } from "../utilities/handlebars.ts"
-import { dinosDB, claimsDB } from "../db.ts"
-import {navBar,cont,template,templateInd,down,templateOneClaim} from "../templates.ts"
+import * as dbTs from "../db.ts"
+import * as templatesTs from "../templates.ts"
 
 export const getDinos = async ({ response }: { response: any }) => {
-    const all = await dinosDB.find({ name: { $ne: null } })
+    const all = await dbTs.dinosDB.find({ name: { $ne: null } })
     console.log(all)
-    var rendered = navBar+cont;
+    var rendered = templatesTs.navBar+templatesTs.cont;
     for (var i=all.length-1; i>=0; i--){
-      rendered += handlebarsEngine(template, {data: all[i]})
+      rendered += handlebarsEngine(templatesTs.template, {data: all[i]})
       console.log(all[i].claims)
       console.log(all[i]._id.$oid)
     }
@@ -23,21 +23,21 @@ export const getDino = async ({
     }
     response: any
     }) => {
-    const dino = await dinosDB.findOne({ id : params.name})
+    const dino = await dbTs.dinosDB.findOne({ id : params.name})
     if (dino) {
         response.status = 200
-        var rendered = navBar+cont
+        var rendered = templatesTs.navBar+templatesTs.cont
 
-        const claims = await claimsDB.find({dinoID:params.name})
-        rendered += handlebarsEngine(templateInd, {data: dino})
+        const claims = await dbTs.claimsDB.find({dinoID:params.name})
+        rendered += handlebarsEngine(templatesTs.templateInd, {data: dino})
         for (var i=0 ; i<claims.length; i++){
-          rendered += handlebarsEngine(templateOneClaim, {data: claims[i]})
+          rendered += handlebarsEngine(templatesTs.templateOneClaim, {data: claims[i]})
         }
-        rendered += handlebarsEngine(down, {data: dino})
+        rendered += handlebarsEngine(templatesTs.down, {data: dino})
         response.body = rendered;
         return
     }
     response.status = 400
 
-    response.body = navBar + cont + `Cannot find dino ${dino.name}`
+    response.body = templatesTs.navBar + templatesTs.cont + `Cannot find dino ${dino.name}`
 }

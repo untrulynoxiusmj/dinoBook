@@ -1,33 +1,33 @@
 import { Router } from 'https://deno.land/x/oak/mod.ts'
 
-import { getClaim, deleteClaim, claim, changeClaim, editClaimPage } from "./controllers/claimControllers.ts"
-import { searchName, searchDate, search } from "./controllers/searchControllers.ts"
-import { getDinos, getDino } from "./controllers/infoControllers.ts" 
-import { change, addDino, newDino, edit, deleteDino } from "./controllers/dinoControllers.ts" 
-import { signup, signupLogic, login, loginLogic, auth, logout } from './controllers/authControllers.ts';
-import { authMiddleware, noAuthMiddleware } from "./middlewares.ts"
+import * as claimControllersTs from "./controllers/claimControllers.ts"
+import * as searchControllersTs from "./controllers/searchControllers.ts"
+import * as infoControllersTs from "./controllers/infoControllers.ts" 
+import * as dinoControllersTs from "./controllers/dinoControllers.ts" 
+import * as authControllersTs from './controllers/authControllers.ts';
+import * as middlewaresTs from "./middlewares.ts"
 
 export const router = new Router()
 router
 
-  .get('/', getDinos)
-  .get('/getDino/:name', getDino)
-  .post('/new', authMiddleware, newDino)
-  .get('/edit/:name', authMiddleware,edit)
-  .get('/deleteClaim/:name', authMiddleware, deleteClaim)
-  .get('/delete/:name', authMiddleware, deleteDino)
-  .get('/claim/:name', authMiddleware,getClaim)
-  .post('/claim', authMiddleware,  claim)
-  .post('/change', authMiddleware, change)
-  .post('/editClaim', authMiddleware, changeClaim)
-  .post('/signup', noAuthMiddleware, signupLogic)
-  .post('/login', noAuthMiddleware, loginLogic)
-  .get('/search/date/:name', searchDate)
-  .get('/search/name/:name', searchName)
-  .get('/editClaim/:name', authMiddleware, editClaimPage)
-  .get('/addDino', authMiddleware, addDino)
-  .get('/signup', noAuthMiddleware, signup)
-  .get('/login', noAuthMiddleware, login)
-  .get('/search', search)
-  .get('/auth', auth)
-  .get('/logout', authMiddleware, logout)
+  .get('/', infoControllersTs.getDinos)
+  .get('/getDino/:name', infoControllersTs.getDino)
+  .post('/new', middlewaresTs.authMiddleware, dinoControllersTs.newDino)
+  .get('/edit/:name', middlewaresTs.authMiddleware,dinoControllersTs.edit)
+  .get('/deleteClaim/:name', middlewaresTs.authMiddleware, claimControllersTs.deleteClaim)
+  .get('/delete/:name', middlewaresTs.authMiddleware, dinoControllersTs.deleteDino)
+  .get('/claim/:name', middlewaresTs.authMiddleware,claimControllersTs.getClaim)
+  .post('/claim', middlewaresTs.authMiddleware,  claimControllersTs.claim)
+  .post('/change', middlewaresTs.authMiddleware, dinoControllersTs.change)
+  .post('/editClaim', middlewaresTs.authMiddleware, claimControllersTs.changeClaim)
+  .post('/signup', middlewaresTs.noAuthMiddleware, authControllersTs.signupLogic)
+  .post('/login', middlewaresTs.noAuthMiddleware, authControllersTs.loginLogic)
+  .get('/search/date/:name', searchControllersTs.searchDate)
+  .get('/search/name/:name', searchControllersTs.searchName)
+  .get('/editClaim/:name', middlewaresTs.authMiddleware, claimControllersTs.editClaimPage)
+  .get('/addDino', middlewaresTs.authMiddleware, dinoControllersTs.addDino)
+  .get('/signup', middlewaresTs.noAuthMiddleware, authControllersTs.signup)
+  .get('/login', middlewaresTs.noAuthMiddleware, authControllersTs.login)
+  .get('/search', searchControllersTs.search)
+  .get('/auth', authControllersTs.auth)
+  .get('/logout', middlewaresTs.authMiddleware, authControllersTs.logout)

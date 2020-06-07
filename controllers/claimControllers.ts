@@ -1,7 +1,7 @@
 import { Context } from "https://deno.land/x/oak/mod.ts";
 import { handlebarsEngine } from "../utilities/handlebars.ts"
-import { dinosDB, claimsDB } from "../db.ts"
-import {navBar, cont, templateClaim, templateClaimEdit} from "../templates.ts"
+import * as dbTs from "../db.ts"
+import * as templatesTs from "../templates.ts"
 
 
 export const editClaimPage = async  ({
@@ -12,12 +12,12 @@ export const editClaimPage = async  ({
       }
       response: any
       }) => {
-        const claim = await claimsDB.findOne({ id: params.name })
+        const claim = await dbTs.claimsDB.findOne({ id: params.name })
 
         if (claim) {
           console.log(claim)
             response.status = 200
-            var rendered = templateClaimEdit
+            var rendered = templatesTs.templateClaimEdit
             response.body = handlebarsEngine(rendered, {data: claim })
             return
         }
@@ -37,10 +37,10 @@ export const changeClaim = async (context : Context, next: any)  => {
       const info = Array.from(body.value.values())
       console.log(info)
       if (context.cookies.get("user")!=info[2]){
-        context.response.body = navBar + `<div class=" text-2xl m-8">This claim was not added by you</div>`
+        context.response.body = templatesTs.navBar + `<div class=" text-2xl m-8">This claim was not added by you</div>`
         return
       }
-      const { matchedCount, modifiedCount, upsertedId } = await claimsDB.updateOne(
+      const { matchedCount, modifiedCount, upsertedId } = await dbTs.claimsDB.updateOne(
         {id: info[1] },
         { $set: { claim : info[3]
                    } }
@@ -48,7 +48,7 @@ export const changeClaim = async (context : Context, next: any)  => {
 
         if (matchedCount==0){
           context.response.status = 400
-          context.response.body = navBar + cont +  `Cannot find claim ${info[3]}`
+          context.response.body = templatesTs.navBar + templatesTs.cont +  `Cannot find claim ${info[3]}`
         } else{
           context.response.redirect(`/getDino/${info[0]}`)
         }
@@ -70,18 +70,18 @@ export const changeClaim = async (context : Context, next: any)  => {
       console.log(info)
       let user = context.cookies.get("user")
       console.log(user)
-      const find = await claimsDB.findOne({user:user, dinoID:info[0]})
+      const find = await dbTs.claimsDB.findOne({user:user, dinoID:info[0]})
       if (find){
-        context.response.body =navBar + `<div class=" text-2xl m-8">You already have one claim
+        context.response.body =templatesTs.navBar + `<div class=" text-2xl m-8">You already have one claim
         <br> Edit it <a href = "/editClaim/${find.id}"> here </a></div>`
         return
       }
-      const insert = await claimsDB.insertOne({dinoID:info[0], claim:info[2], user:user})
-      const up = await claimsDB.updateOne({_id:insert},{$set : {id:insert.$oid}})
+      const insert = await dbTs.claimsDB.insertOne({dinoID:info[0], claim:info[2], user:user})
+      const up = await dbTs.claimsDB.updateOne({_id:insert},{$set : {id:insert.$oid}})
       console.log(insert)
         if (!insert){
           context.response.status = 400
-          context.response.body = navBar + cont +  `Cannot find dino ${info[0]}`
+          context.response.body = templatesTs.navBar + templatesTs.cont +  `Cannot find dino ${info[0]}`
         } else{
           context.response.redirect(`/getDino/${info[0]}`)
         }
@@ -96,30 +96,30 @@ export const getClaim =  async  ({
       }
       response: any
       }) => {
-        const dino = await dinosDB.findOne({ id : params.name})
+        const dino = await dbTs.dinosDB.findOne({ id : params.name})
         if (dino) {
           console.log(dino)
             response.status = 200
-            var rendered = templateClaim
+            var rendered = templatesTs.templateClaim
             response.body = handlebarsEngine(rendered, {data: dino })
             return
         }
         response.status = 400
-        response.body =  navBar + cont +  `Cannot find dino ${params.name}`
+        response.body =  templatesTs.navBar + templatesTs.cont +  `Cannot find dino ${params.name}`
   }
 
 
   export const deleteClaim = async  (context:any) => {
-    const claim = await claimsDB.findOne({ id : context.params.name})
+    const claim = await dbTs.claimsDB.findOne({ id : context.params.name})
     if (context.cookies.get("user")!=claim.user){
-      context.response.body = navBar + `<div class=" text-2xl m-8">This claim was not added by you</div>`
+      context.response.body = templatesTs.navBar + `<div class=" text-2xl m-8">This claim was not added by you</div>`
       return
     }
     if (claim) {
-      let deleteClaim = await claimsDB.deleteOne({id:context.params.name})
+      let deleteClaim = await dbTs.claimsDB.deleteOne({id:context.params.name})
       context.response.redirect("/getDino/" + claim.dinoID)
       return
     }
     context.response.status = 400
-    context.response.body =  navBar + cont +  `Cannot find claim ${context.params.name}`
+    context.response.body =  templatesTs.navBar + templatesTs.cont +  `Cannot find claim ${context.params.name}`
 }

@@ -1,5 +1,5 @@
 import { handlebarsEngine } from "../utilities/handlebars.ts"
-import { navBar,cont,template, templateSearch,} from "../templates.ts"
+import * as templatesTs from "../templates.ts"
 import { dinosDB } from "../db.ts"
 
 export const search =  ({
@@ -9,8 +9,8 @@ export const search =  ({
     request: any
     response: any
   }) => {
-    var rendered = navBar+cont
-    rendered+= templateSearch
+    var rendered = templatesTs.navBar+templatesTs.cont
+    rendered+= templatesTs.templateSearch
     response.body = handlebarsEngine(rendered, {data: {} })
   }
 
@@ -27,9 +27,9 @@ export const searchName = async  ({
         // console.log("ADD\n",add,"ADD\n")
           console.log("dinos",dinos)
           response.status = 200
-          var rendered = navBar+cont;
+          var rendered = templatesTs.navBar+templatesTs.cont;
           for (var i=0; i<dinos.length; i++){
-            rendered += handlebarsEngine(template, {data: dinos[i]})
+            rendered += handlebarsEngine(templatesTs.template, {data: dinos[i]})
           }
           response.body = rendered
             return
@@ -46,11 +46,11 @@ export const searchDate = async  ({
         const dinos = await dinosDB.find({ key: params.name })
           console.log("dinos",dinos)
           response.status = 200
-          var rendered = navBar+`<div class="flex m-8 items-center justify-center searchName">
+          var rendered = templatesTs.navBar+`<div class="flex m-8 items-center justify-center searchName">
           <input class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit" value="Sort by name">
-        </div>`+cont;
+        </div>`+templatesTs.cont;
           for (var i=dinos.length-1; i>=0; i--){
-            rendered += handlebarsEngine(template, {data: dinos[i]})
+            rendered += handlebarsEngine(templatesTs.template, {data: dinos[i]})
           }
           rendered+=`<script>
           document.querySelector(".searchName").addEventListener('click', ()=>{
